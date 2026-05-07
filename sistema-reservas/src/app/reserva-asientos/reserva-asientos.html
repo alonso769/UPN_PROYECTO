@@ -1,0 +1,84 @@
+<div class="dashboard-container">
+  
+  <aside class="control-panel">
+    <div class="brand">
+      <h2>Portal Académico</h2>
+      <p>Gestión de Espacios</p>
+    </div>
+
+    <div class="filter-section">
+      <label>Día de la semana</label>
+      <select [(ngModel)]="diaSeleccionado" (change)="alCambiarDia()">
+        <option *ngFor="let dia of diasSemana" [value]="dia">{{ dia }}</option>
+      </select>
+    </div>
+
+    <div class="filter-section" *ngIf="clasesDelDia.length > 0">
+      <label>Seleccionar Curso</label>
+      <div class="course-list">
+        <button 
+          *ngFor="let clase of clasesDelDia" 
+          [class.active]="claseActual?.id === clase.id"
+          (click)="seleccionarClase(clase)">
+          {{ clase.curso }}
+        </button>
+      </div>
+    </div>
+    
+    <div class="no-classes" *ngIf="clasesDelDia.length === 0">
+      No hay clases programadas para este día.
+    </div>
+  </aside>
+
+  <main class="main-content" *ngIf="claseActual">
+    
+    <header class="class-info-card">
+      <div class="info-item">
+        <span class="label">Profesor a cargo</span>
+        <span class="value">{{ claseActual.profesor }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Aula Asignada</span>
+        <span class="value">{{ claseActual.aula }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Accesibilidad</span>
+        <span class="value badge" [class.success]="claseActual.tieneAscensor" [class.warning]="!claseActual.tieneAscensor">
+          {{ claseActual.tieneAscensor ? '♿ Con Ascensor' : '⚠️ Solo Escaleras' }}
+        </span>
+      </div>
+    </header>
+
+    <div class="classroom-map">
+      <div class="whiteboard">Pizarra / Escritorio del Profesor</div>
+      
+      <div class="seat-grid">
+        <div 
+          *ngFor="let asiento of claseActual.asientos" 
+          class="desk" 
+          [ngClass]="[asiento.estado, asiento.tipo]"
+          (click)="toggleAsiento(asiento)"
+          [title]="'Carpeta ' + asiento.id + (asiento.tipo === 'preferencial' ? ' (Preferencial)' : '')">
+          {{ asiento.id }}
+        </div>
+      </div>
+    </div>
+
+    <footer class="action-footer">
+      <div class="legend">
+        <div class="legend-item"><span class="dot disponible"></span> Disponible</div>
+        <div class="legend-item"><span class="dot ocupado"></span> Ocupado</div>
+        <div class="legend-item"><span class="dot seleccionado"></span> Tu Selección</div>
+        <div class="legend-item"><span class="dot preferencial"></span> Fila Preferencial</div>
+      </div>
+
+      <div class="summary-actions" *ngIf="asientosSeleccionados.length > 0">
+        <div class="selected-desks">
+          Reservando: <span class="desk-badge" *ngFor="let a of asientosSeleccionados">{{ a.id }}</span>
+        </div>
+        <button class="btn-primary" (click)="confirmarReserva()">Confirmar Asistencia</button>
+      </div>
+    </footer>
+
+  </main>
+</div>
