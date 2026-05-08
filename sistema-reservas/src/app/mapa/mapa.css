@@ -1,45 +1,395 @@
-.map-container {
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f3f4f6;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* ===== LAYOUT ===== */
+
+.tower-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ===== SIDEBAR ===== */
+
+.sidebar {
+  width: 380px;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid #e5e7eb;
+  padding: 40px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding: 20px;
-  max-width: 1000px;
-  margin: 0 auto;
-  font-family: Arial, sans-serif;
 }
 
-.panel-control {
-  background-color: #f8fafc;
-  padding: 20px;
-  border-radius: 8px;
-  border-left: 5px solid #FFC72C;
-}
-
-.panel-control h2 {
-  margin-top: 0;
-  color: #002D72;
-}
-
-#mapa-upn {
-  height: 600px;
-  width: 100%;
-  border-radius: 8px;
-  border: 2px solid #e2e8f0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.btn-upn {
-  background-color: #002D72;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  font-size: 16px;
-  border-radius: 6px;
+.back-button {
+  color: #64748b;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s;
+  margin-bottom: 40px;
+  transition: .2s;
 }
 
-.btn-upn:hover {
-  background-color: #001a45;
+.back-button:hover {
+  color: #111827;
+}
+
+.brand .mini-title {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #94a3b8;
+}
+
+.brand h1 {
+  font-size: 42px;
+  margin: 10px 0;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.brand p {
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* ===== INFO ===== */
+
+.info-card {
+  margin-top: 50px;
+  background: white;
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.06);
+
+  animation: fadeIn .4s ease;
+}
+
+.floor-badge {
+  display: inline-block;
+  background: #dbeafe;
+  color: #1d4ed8;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.info-card h2 {
+  margin: 0;
+  font-size: 32px;
+  color: #111827;
+}
+
+.room-type {
+  margin-top: 10px;
+  color: #64748b;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+
+.info-card p {
+  margin-top: 20px;
+  line-height: 1.7;
+  color: #475569;
+}
+
+.reserve-btn {
+  width: 100%;
+  margin-top: 25px;
+  border: none;
+  background: #111827;
+  color: white;
+  padding: 16px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.reserve-btn:hover {
+  transform: translateY(-2px);
+  background: #1e293b;
+}
+
+/* ===== EMPTY ===== */
+
+.empty-box {
+  margin-top: 70px;
+  border: 2px dashed #cbd5e1;
+  border-radius: 24px;
+  padding: 60px 30px;
+  text-align: center;
+  color: #64748b;
+}
+
+.building-icon {
+  font-size: 70px;
+  margin-bottom: 20px;
+}
+
+/* ===== VIEWER ===== */
+
+.viewer {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background:
+    linear-gradient(to bottom, #f8fafc, #eef2f7);
+
+  position: relative;
+}
+
+.viewer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    linear-gradient(#dbeafe22 1px, transparent 1px),
+    linear-gradient(90deg, #dbeafe22 1px, transparent 1px);
+
+  background-size: 40px 40px;
+}
+
+/* ===== BUILDING ===== */
+
+.building {
+  width: 700px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== ROOF ===== */
+
+.roof {
+  height: 18px;
+  background: #111827;
+  border-radius: 8px 8px 0 0;
+}
+
+/* ===== FLOOR ===== */
+
+.floor {
+  position: relative;
+  display: flex;
+
+  height: 78px;
+
+  border-left: 5px solid #1e293b;
+  border-right: 5px solid #1e293b;
+  border-bottom: 2px solid #cbd5e1;
+
+  background: rgba(255,255,255,0.45);
+
+  transition: .4s;
+}
+
+.floor:hover {
+  background: rgba(255,255,255,0.75);
+}
+
+.floor-active {
+  transform: scale(1.03);
+
+  z-index: 10;
+
+  background: white;
+
+  box-shadow:
+    0 15px 40px rgba(0,0,0,0.08);
+}
+
+/* ===== LABEL ===== */
+
+.floor-label {
+  width: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  color: #64748b;
+  font-weight: bold;
+
+  border-right: 1px dashed #cbd5e1;
+}
+
+.floor-label span {
+  transform: rotate(-90deg);
+  letter-spacing: 2px;
+}
+
+/* ===== CONTENT ===== */
+
+.floor-content {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 10px 18px;
+}
+
+/* ===== ROOM ===== */
+
+.room {
+  flex: 1;
+  height: 100%;
+
+  position: relative;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  transition: .35s;
+
+  border: 1px solid #93c5fd;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,0.95),
+      rgba(219,234,254,0.9)
+    );
+}
+
+.room:hover {
+  transform: translateY(-4px) scale(1.03);
+
+  box-shadow:
+    0 12px 25px rgba(59,130,246,0.25);
+
+  z-index: 20;
+}
+
+/* ===== GLASS ===== */
+
+.glass {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.7),
+      rgba(255,255,255,0.05)
+    );
+}
+
+/* ===== ROOM NAME ===== */
+
+.room-name {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+}
+
+/* ===== ACTIVE ===== */
+
+.room-active {
+  background:
+    linear-gradient(
+      145deg,
+      #fde68a,
+      #facc15
+    );
+
+  border: 1px solid #eab308;
+
+  transform: scale(1.05);
+
+  box-shadow:
+    0 0 30px rgba(250,204,21,0.7);
+}
+
+/* ===== TIPOS ===== */
+
+.room.comedor {
+  background:
+    linear-gradient(
+      145deg,
+      #fbcfe8,
+      #f9a8d4
+    );
+}
+
+.room.deporte {
+  background:
+    linear-gradient(
+      145deg,
+      #bbf7d0,
+      #86efac
+    );
+}
+
+.room.recepcion {
+  background:
+    linear-gradient(
+      145deg,
+      #fde68a,
+      #facc15
+    );
+}
+
+/* ===== BASE ===== */
+
+.base {
+  height: 24px;
+  background: #0f172a;
+  border-radius: 0 0 10px 10px;
+}
+
+/* ===== ANIMACIONES ===== */
+
+@keyframes fadeIn {
+
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 1100px) {
+
+  .tower-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+  }
+
+  .building {
+    width: 95%;
+    margin: 40px auto;
+  }
+
 }

@@ -1,6 +1,18 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import * as L from 'leaflet';
+import { Router } from '@angular/router';
+
+interface Room {
+  id: string;
+  nombre: string;
+  tipo: 'aula' | 'comedor' | 'deporte' | 'recepcion';
+}
+
+interface Floor {
+  numero: number;
+  nombre: string;
+  rooms: Room[];
+}
 
 @Component({
   selector: 'app-mapa',
@@ -9,80 +21,116 @@ import * as L from 'leaflet';
   templateUrl: './mapa.html',
   styleUrls: ['./mapa.css']
 })
-export class MapaComponent implements AfterViewInit {
-  private map!: L.Map;
-  private routeLine!: L.Polyline;
+export class MapaComponent {
 
-  // Puntos clave del campus UPN (Coordenadas simuladas)
-  private salas = [
-    { id: 1, nombre: 'Pabellón A - Aulas Teóricas', coords: [-12.0601, -77.0487] as L.LatLngExpression },
-    { id: 2, nombre: 'Pabellón B - Laboratorios', coords: [-12.0608, -77.0495] as L.LatLngExpression },
-    { id: 3, nombre: 'Cafetería Central', coords: [-12.0605, -77.0480] as L.LatLngExpression }
-  ];
+  pisos: Floor[] = [];
 
-  ngAfterViewInit(): void {
-    this.initMap();
-    this.addMarkers();
-    this.fixLeafletIcons(); // Soluciona el bug de iconos invisibles en Angular
+  pisoSeleccionado: Floor | null = null;
+
+  aulaSeleccionada: Room | null = null;
+
+  pisoExpandido: number | null = null;
+
+  constructor(private router: Router) {
+    this.construirTorre();
   }
 
-  private initMap(): void {
-    // Centramos el mapa en el campus con un zoom cercano
-    this.map = L.map('mapa-upn', {
-      center: [-12.0605, -77.0487],
-      zoom: 18
-    });
+  construirTorre() {
 
-    // Capa visual del mapa
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 20,
-      attribution: '© UPN Ecosistema Digital'
-    }).addTo(this.map);
-  }
+    let edificio: Floor[] = [];
 
-  private addMarkers(): void {
-    this.salas.forEach(sala => {
-      L.marker(sala.coords)
-        .addTo(this.map)
-        .bindPopup(`<b>${sala.nombre}</b><br>Haz clic en "Trazar Ruta" para llegar aquí.`);
-    });
-  }
+    const facultades = [
+      'Servicios',
+      'Sistemas',
+      'Civil',
+      'Industrial',
+      'Negocios',
+      'Derecho',
+      'Arquitectura',
+      'Comunicaciones',
+      'Psicología',
+      'Recreación'
+    ];
 
-  trazarRuta() {
-    // Si ya hay una línea dibujada, la limpiamos
-    if (this.routeLine) {
-      this.map.removeLayer(this.routeLine);
+    for (let i = 1; i <= 10; i++) {
+
+      let rooms: Room[] = [];
+
+      let tipoPiso = facultades[i - 1];
+
+      if (i === 1) {
+
+        rooms = [
+          {
+            id: '101',
+            nombre: 'Recepción Principal',
+            tipo: 'recepcion'
+          },
+          {
+            id: '102',
+            nombre: 'Cafetería Central',
+            tipo: 'comedor'
+          }
+        ];
+
+      } else if (i === 10) {
+
+        rooms = [
+          {
+            id: '1001',
+            nombre: 'Cancha de Básquet',
+            tipo: 'deporte'
+          },
+          {
+            id: '1002',
+            nombre: 'Comedor Panorámico',
+            tipo: 'comedor'
+          }
+        ];
+
+      } else {
+
+        for (let r = 1; r <= 5; r++) {
+
+          rooms.push({
+            id: `${i}0${r}`,
+            nombre: `Aula ${i}0${r}`,
+            tipo: 'aula'
+          });
+
+        }
+      }
+
+      edificio.push({
+        numero: i,
+        nombre: `Piso ${i} - ${tipoPiso}`,
+        rooms: rooms
+      });
+
     }
 
-    // Trazamos ruta desde Pabellón A hasta Laboratorios
-    const inicio = this.salas[0].coords;
-    const destino = this.salas[1].coords;
-
-    this.routeLine = L.polyline([inicio, destino], {
-      color: '#002D72', // Azul institucional UPN
-      weight: 6,
-      opacity: 0.8,
-      dashArray: '10, 10' // Efecto de línea punteada (caminando)
-    }).addTo(this.map);
-
-    // Ajustar la cámara para que se vea toda la ruta
-    this.map.fitBounds(this.routeLine.getBounds(), { padding: [50, 50] });
+    this.pisos = edificio.reverse();
   }
 
-  private fixLeafletIcons() {
-    const iconRetinaUrl = 'assets/marker-icon-2x.png';
-    const iconUrl = 'assets/marker-icon.png';
-    const shadowUrl = 'assets/marker-shadow.png';
-    const iconDefault = L.icon({
-      iconRetinaUrl,
-      iconUrl,
-      shadowUrl,
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      tooltipAnchor: [16, -28],
-      shadowSize: [41, 41]
-    });
-    L.Marker.prototype.options.icon = iconDefault;
+  seleccionarEspacio(piso: Floor, room: Room) {
+
+    this.pisoSeleccionado = piso;
+
+    this.aulaSeleccionada = room;
+
+    this.pisoExpandido = piso.numero;
   }
+
+  irAReservas() {
+
+    if (this.aulaSeleccionada?.tipo === 'aula') {
+      this.router.navigate(['/reservas']);
+    }
+
+  }
+
+  volverAlLogin() {
+    this.router.navigate(['/login']);
+  }
+
 }

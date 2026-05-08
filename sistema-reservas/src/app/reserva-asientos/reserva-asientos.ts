@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 export interface Asiento {
   id: string;
   estado: 'disponible' | 'ocupado' | 'seleccionado';
-  tipo: 'estandar' | 'preferencial'; // Preferencial para primeras filas
+  tipo: 'estandar' | 'preferencial';
 }
 
 export interface ClaseAsignada {
@@ -16,6 +17,7 @@ export interface ClaseAsignada {
   aula: string;
   capacidad: number;
   tieneAscensor: boolean;
+  horario: string;
   asientos: Asiento[];
 }
 
@@ -24,11 +26,11 @@ export interface ClaseAsignada {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './reserva-asientos.html',
-  styleUrl: './reserva-asientos.css'
+  styleUrls: ['./reserva-asientos.css']
 })
 export class ReservaAsientos implements OnInit {
   diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-  diaSeleccionado = 'Jueves'; // Empezamos con un día por defecto
+  diaSeleccionado = 'Jueves'; 
   
   baseDatosClases: ClaseAsignada[] = [];
   clasesDelDia: ClaseAsignada[] = [];
@@ -36,27 +38,29 @@ export class ReservaAsientos implements OnInit {
   
   asientosSeleccionados: Asiento[] = [];
 
+  constructor(private router: Router) {}
+
   ngOnInit(): void {
-    this.generarBaseDeDatos();
+    this.generarBaseDeDatosSimulada();
     this.alCambiarDia();
   }
 
-  // Generamos datos complejos que simulan una base de datos real
-  generarBaseDeDatos() {
+  // Base de datos simulada con cursos advanced para Ingeniería de Sistemas
+  generarBaseDeDatosSimulada() {
     this.baseDatosClases = [
       {
-        id: 'C1', dia: 'Jueves', curso: 'Inteligencia de Negocios', profesor: 'Ing. Fernández',
-        aula: 'Laboratorio B-302', capacidad: 40, tieneAscensor: true,
+        id: 'SIS701', dia: 'Jueves', curso: 'Inteligencia de Negocios (BI)', profesor: 'Ing. Fernández',
+        aula: 'Laboratorio de Cómputo B-302', capacidad: 40, tieneAscensor: true, horario: '14:00 - 17:30',
         asientos: this.generarMapaAsientos(4, 10)
       },
       {
-        id: 'C2', dia: 'Jueves', curso: 'Arquitectura de Software', profesor: 'Lic. Norma',
-        aula: 'Pabellón A-105', capacidad: 30, tieneAscensor: false,
+        id: 'SIS702', dia: 'Jueves', curso: 'Arquitectura de Software', profesor: 'Lic. Norma',
+        aula: 'Aula Teórica A-405', capacidad: 30, tieneAscensor: false, horario: '18:00 - 21:15',
         asientos: this.generarMapaAsientos(3, 10)
       },
       {
-        id: 'C3', dia: 'Sábado', curso: 'Gestión de Proyectos TI', profesor: 'Dr. Silva',
-        aula: 'Auditorio Principal', capacidad: 50, tieneAscensor: true,
+        id: 'SIS703', dia: 'Sábado', curso: 'Gestión y Calidad de Datos', profesor: 'Dr. Silva',
+        aula: 'Auditorio Principal', capacidad: 50, tieneAscensor: true, horario: '08:00 - 12:00',
         asientos: this.generarMapaAsientos(5, 10)
       }
     ];
@@ -69,8 +73,8 @@ export class ReservaAsientos implements OnInit {
       for (let j = 1; j <= columnas; j++) {
         mapa.push({
           id: `${letras[i]}${j}`,
-          estado: Math.random() > 0.75 ? 'ocupado' : 'disponible', // 25% de ocupación aleatoria
-          tipo: i === 0 ? 'preferencial' : 'estandar' // Primera fila es preferencial
+          estado: Math.random() > 0.65 ? 'ocupado' : 'disponible', 
+          tipo: i === 0 ? 'preferencial' : 'estandar' // Primera fila preferencial
         });
       }
     }
@@ -82,13 +86,14 @@ export class ReservaAsientos implements OnInit {
     if (this.clasesDelDia.length > 0) {
       this.seleccionarClase(this.clasesDelDia[0]);
     } else {
+      this.claseActual = null as any;
       this.asientosSeleccionados = [];
     }
   }
 
   seleccionarClase(clase: ClaseAsignada) {
     this.claseActual = clase;
-    this.asientosSeleccionados = []; // Reiniciamos selección al cambiar de clase
+    this.asientosSeleccionados = []; 
   }
 
   toggleAsiento(asiento: Asiento) {
@@ -107,9 +112,11 @@ export class ReservaAsientos implements OnInit {
     if (this.asientosSeleccionados.length === 0) return;
     
     const ids = this.asientosSeleccionados.map(a => a.id).join(', ');
-    alert(`¡Reserva Exitosa!\n\nCurso: ${this.claseActual.curso}\nAula: ${this.claseActual.aula}\nAsientos: ${ids}`);
+    alert(`✅ ¡Reserva Exitosa!\n\nCurso: ${this.claseActual.curso}\nAula: ${this.claseActual.aula}\nHorario: ${this.claseActual.horario}\nAsientos Separados: ${ids}`);
     
     this.asientosSeleccionados.forEach(a => a.estado = 'ocupado');
     this.asientosSeleccionados = [];
   }
+
+  volverAlMapa() { this.router.navigate(['/mapa']); }
 }

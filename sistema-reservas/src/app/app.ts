@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { ReservaAsientos } from './reserva-asientos/reserva-asientos';
-import { MapaComponent } from './mapa/mapa';
+import { RouterOutlet } from '@angular/router';
+
 @Component({
   selector: 'app-root',
-  imports: [ReservaAsientos, MapaComponent],
+  standalone: true,
+  imports: [RouterOutlet], 
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
-export class App {
-  title = 'sistema-reservas';
-}
+export class AppComponent { }

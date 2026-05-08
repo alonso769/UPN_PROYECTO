@@ -1,302 +1,160 @@
+/* --- CONFIGURACIÓN GLOBAL --- */
 :host {
   display: block;
   background-color: #f4f7f6;
   min-height: 100vh;
-  padding: 20px;
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-.dashboard-container {
+.reserva-dashboard-layout {
   display: flex;
   gap: 20px;
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
+  padding: 20px;
 }
 
-/* Panel Lateral */
-.control-panel {
-  width: 300px;
+/* --- PANEL IZQUIERDO (Filtros y Resumen) --- */
+.panel-filtros {
+  width: 320px;
   background: white;
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   height: fit-content;
-}
-
-.brand h2 {
-  margin: 0;
-  color: #1a2b4c;
-  font-size: 1.5rem;
-}
-
-.brand p {
-  margin: 4px 0 24px 0;
-  color: #64748b;
-  font-size: 0.9rem;
-}
-
-.filter-section {
-  margin-bottom: 24px;
-}
-
-.filter-section label {
-  display: block;
-  font-weight: 600;
-  color: #334155;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  background: #f8fafc;
-  font-size: 1rem;
-  outline: none;
-}
-
-.course-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
-.course-list button {
-  text-align: left;
-  padding: 12px;
-  border: 1px solid #e2e8f0;
-  background: white;
-  border-radius: 6px;
+.header-retroceder {
+  color: #64748b;
+  font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s;
-  color: #475569;
-  font-weight: 500;
-}
-
-.course-list button:hover {
-  background: #f1f5f9;
-}
-
-.course-list button.active {
-  background: #eff6ff;
-  border-color: #3b82f6;
-  color: #1d4ed8;
+  margin-bottom: 20px;
   font-weight: bold;
+  transition: color 0.2s;
+}
+.header-retroceder:hover { color: #1a2b4c; }
+
+.titulo-panel { margin: 0; color: #1a2b4c; font-size: 1.5rem; }
+.subtitulo { margin: 4px 0 24px 0; color: #64748b; font-size: 0.9rem; }
+
+.grupo-filtro { margin-bottom: 24px; }
+.grupo-filtro label { 
+  display: block; font-weight: 600; color: #334155; margin-bottom: 8px; 
+  font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; 
+}
+.grupo-filtro select { 
+  width: 100%; padding: 10px; border: 1px solid #cbd5e1; 
+  border-radius: 6px; background: #f8fafc; font-size: 1rem; outline: none; 
 }
 
-.no-classes {
-  color: #94a3b8;
-  font-style: italic;
-  text-align: center;
-  padding: 20px 0;
+/* Lista de Cursos */
+.lista-cursos { display: flex; flex-direction: column; gap: 8px; }
+.curso-card { 
+  padding: 12px; border: 1px solid #e2e8f0; background: white; 
+  border-radius: 6px; cursor: pointer; transition: all 0.2s; 
+  display: flex; flex-direction: column;
 }
+.curso-card:hover { background: #f1f5f9; }
+.curso-card.active { background: #eff6ff; border-color: #3b82f6; }
+.curso-card strong { color: #1d4ed8; font-weight: bold; font-size: 15px; }
+.curso-card span { color: #475569; font-size: 12px; margin-top: 4px; font-weight: 500;}
 
-/* Área Principal */
-.main-content {
+/* Panel Inferior: Confirmación de Selección */
+.resumen-seleccion { border-top: 1px solid #e2e8f0; padding-top: 20px; margin-top: auto; }
+.resumen-seleccion h3 { font-size: 1rem; color: #334155; margin-top: 0; margin-bottom: 12px;}
+.tickets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+.ticket-badge { 
+  background: #eff6ff; color: #1d4ed8; padding: 4px 8px; 
+  border-radius: 4px; font-weight: bold; font-size: 12px; border: 1px solid #bfdbfe; 
+}
+.btn-confirmar { 
+  background: #10b981; color: white; border: none; width: 100%; 
+  padding: 12px 24px; border-radius: 6px; font-size: 1rem; font-weight: bold; 
+  cursor: pointer; transition: background 0.2s; 
+}
+.btn-confirmar:hover { background: #059669; }
+
+
+/* --- PANEL DERECHO (Mapa del Aula y Sillas) --- */
+.panel-mapa {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.class-info-card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
+/* Info Superior del Aula */
+.info-aula-header {
+  background: white; border-radius: 12px; padding: 20px;
+  display: flex; justify-content: space-between; align-items: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
+.info-item { display: flex; flex-direction: column; gap: 4px; }
+.info-item small { font-size: 0.85rem; color: #64748b; text-transform: uppercase; font-weight: 600; }
+.info-item strong { font-size: 1.1rem; color: #0f172a; font-weight: bold; }
 
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+/* Badges de Accesibilidad */
+.badge-ascensor { 
+  padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; 
+  font-weight: bold; display: inline-block; background: #dcfce7; color: #166534;
 }
+.badge-ascensor.no-ascensor { background: #fef08a; color: #854d0e; }
 
-.info-item .label {
-  font-size: 0.85rem;
-  color: #64748b;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-.info-item .value {
-  font-size: 1.1rem;
-  color: #0f172a;
-  font-weight: bold;
-}
-
-.badge {
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  display: inline-block;
-}
-
-.badge.success { background: #dcfce7; color: #166534; }
-.badge.warning { background: #fef08a; color: #854d0e; }
-
-/* Mapa del Aula */
-.classroom-map {
-  background: white;
-  border-radius: 12px;
-  padding: 40px;
+/* Contenedor principal del plano */
+.plano-asientos-container {
+  background: white; border-radius: 12px; padding: 40px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: flex; flex-direction: column; align-items: center;
 }
 
-.whiteboard {
-  width: 60%;
-  height: 12px;
-  background: #cbd5e1;
-  border-radius: 4px;
-  margin-bottom: 40px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #64748b;
-  font-size: 0.85rem;
-  padding-top: 30px;
+/* Leyenda con tus puntos (dots) circulares */
+.leyenda { display: flex; justify-content: center; gap: 20px; font-size: 0.9rem; color: #475569; margin-bottom: 30px; width: 100%;}
+.item-leyenda { display: flex; align-items: center; gap: 8px; font-weight: 500;}
+.cuadro { width: 14px; height: 14px; border-radius: 50%; }
+.cuadro.disponible { background: #cbd5e1; }
+.cuadro.ocupado { background: #f87171; }
+.cuadro.seleccionado { background: #3b82f6; }
+.cuadro.preferencial { border: 2px solid #8b5cf6; background: transparent; }
+
+/* Pizarra 3D (Tu diseño original) */
+.pizarra {
+  width: 60%; height: 12px; background: #cbd5e1;
+  border-radius: 4px; margin-bottom: 40px; position: relative;
+  display: flex; justify-content: center; align-items: center;
+  color: #64748b; font-size: 0.85rem; padding-top: 30px;
+}
+.pizarra::before {
+  content: ''; position: absolute; top: 0; width: 100%;
+  height: 6px; background: #94a3b8; border-radius: 4px;
 }
 
-.whiteboard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 6px;
-  background: #94a3b8;
-  border-radius: 4px;
-}
-
-.seat-grid {
+/* Grid de Asientos (Cuadrícula centrada) */
+.grid-asientos {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(10, 42px); /* 10 columnas fijas del tamaño de tus asientos */
   gap: 16px 12px;
+  justify-content: center;
 }
 
-/* Diseño de Carpetas (Asientos) */
-.desk {
-  width: 42px;
-  height: 38px;
-  border-radius: 6px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  user-select: none;
+/* Diseño de Carpetas (Tus Asientos) */
+.asiento {
+  width: 42px; height: 38px; border-radius: 6px;
+  display: flex; justify-content: center; align-items: center;
+  font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; user-select: none;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.desk.estandar.disponible {
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  color: #475569;
-}
+.asiento.estandar.disponible { background: #f1f5f9; border: 1px solid #cbd5e1; color: #475569; }
+.asiento.preferencial.disponible { background: #f8fafc; border: 2px solid #8b5cf6; color: #6d28d9; }
 
-.desk.preferencial.disponible {
-  background: #f8fafc;
-  border: 2px solid #8b5cf6;
-  color: #6d28d9;
-}
+.asiento.disponible:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.15); }
 
-.desk.disponible:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-}
+.asiento.seleccionado { background: #3b82f6; border: 1px solid #2563eb; color: white; transform: scale(1.05); }
 
-.desk.seleccionado {
-  background: #3b82f6;
-  border: 1px solid #2563eb;
-  color: white;
-  transform: scale(1.05);
-}
+.asiento.ocupado { background: #fecaca; border: 1px solid #f87171; color: #991b1b; cursor: not-allowed; opacity: 0.8; }
 
-.desk.ocupado {
-  background: #fecaca;
-  border: 1px solid #f87171;
-  color: #991b1b;
-  cursor: not-allowed;
-  opacity: 0.8;
-}
-
-/* Footer y Leyenda */
-.action-footer {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.legend {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  font-size: 0.9rem;
-  color: #475569;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.dot.disponible { background: #cbd5e1; }
-.dot.ocupado { background: #f87171; }
-.dot.seleccionado { background: #3b82f6; }
-.dot.preferencial { border: 2px solid #8b5cf6; background: transparent; }
-
-.summary-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid #e2e8f0;
-  padding-top: 20px;
-}
-
-.desk-badge {
-  background: #eff6ff;
-  color: #1d4ed8;
-  padding: 4px 8px;
-  border-radius: 4px;
-  margin: 0 4px;
-  font-weight: bold;
-  border: 1px solid #bfdbfe;
-}
-
-.btn-primary {
-  background: #10b981;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-primary:hover {
-  background: #059669;
-}
+/* Mensaje cuando no hay clases */
+.no-data { color: #94a3b8; font-style: italic; text-align: center; padding: 40px 0; width: 100%; font-size: 1.2rem;}

@@ -1,9 +1,134 @@
-<div class="map-container">
-  <div class="panel-control">
-    <h2>Navegación de Campus UPN</h2>
-    <p>Encuentra la ruta más rápida a tu próxima clase.</p>
-    <button (click)="trazarRuta()" class="btn-upn">Trazar Ruta: Pab. A 👉 Laboratorios</button>
-  </div>
+<div class="tower-layout">
 
-  <div id="mapa-upn"></div>
+  <!-- PANEL IZQUIERDO -->
+  <aside class="sidebar">
+
+    <div class="back-button" (click)="volverAlLogin()">
+      ← Volver
+    </div>
+
+    <div class="brand">
+
+      <span class="mini-title">
+        UPN SMART CAMPUS
+      </span>
+
+      <h1>
+        Torre Académica
+      </h1>
+
+      <p>
+        Corte transversal interactivo
+      </p>
+
+    </div>
+
+    <div
+      class="info-card"
+      *ngIf="aulaSeleccionada; else emptyState"
+    >
+
+      <div class="floor-badge">
+        {{ pisoSeleccionado?.nombre }}
+      </div>
+
+      <h2>
+        {{ aulaSeleccionada.nombre }}
+      </h2>
+
+      <div class="room-type">
+        {{ aulaSeleccionada.tipo | uppercase }}
+      </div>
+
+      <p>
+        Espacio interactivo del edificio universitario.
+        Puedes visualizar disponibilidad y gestionar reservas.
+      </p>
+
+      <button
+        class="reserve-btn"
+        *ngIf="aulaSeleccionada.tipo === 'aula'"
+        (click)="irAReservas()"
+      >
+        Gestionar Aula →
+      </button>
+
+    </div>
+
+    <!-- ESTADO VACÍO -->
+    <ng-template #emptyState>
+
+      <div class="empty-box">
+
+        <div class="building-icon">
+          🏢
+        </div>
+
+        <h3>
+          Explora la torre
+        </h3>
+
+        <p>
+          Selecciona un piso o aula para visualizar información
+          y acceder al sistema de reservas.
+        </p>
+
+      </div>
+
+    </ng-template>
+
+  </aside>
+
+  <!-- VISOR -->
+  <section class="viewer">
+
+    <div class="building">
+
+      <!-- TECHO -->
+      <div class="roof"></div>
+
+      <!-- PISOS -->
+      <div
+        class="floor"
+        *ngFor="let piso of pisos"
+        [class.floor-active]="pisoExpandido === piso.numero"
+      >
+
+        <!-- ETIQUETA -->
+        <div class="floor-label">
+          <span>
+            P{{ piso.numero }}
+          </span>
+        </div>
+
+        <!-- CONTENIDO -->
+        <div class="floor-content">
+
+          <div
+            class="room"
+            *ngFor="let room of piso.rooms"
+            [ngClass]="room.tipo"
+            [class.room-active]="aulaSeleccionada?.id === room.id"
+            (click)="seleccionarEspacio(piso, room)"
+          >
+
+            <div class="glass"></div>
+
+            <div class="room-name">
+              {{ room.id }}
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- BASE -->
+      <div class="base"></div>
+
+    </div>
+
+  </section>
+
 </div>

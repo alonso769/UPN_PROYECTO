@@ -1,84 +1,86 @@
-<div class="dashboard-container">
+<div class="reserva-dashboard-layout">
   
-  <aside class="control-panel">
-    <div class="brand">
-      <h2>Portal Académico</h2>
-      <p>Gestión de Espacios</p>
+  <aside class="panel-filtros">
+    <div class="header-retroceder" (click)="volverAlMapa()">
+      <span>⬅ Volver al Mapa</span>
     </div>
 
-    <div class="filter-section">
+    <h2 class="titulo-panel">Gestión de Espacios</h2>
+    <p class="subtitulo">Portal Académico UPN</p>
+
+    <div class="grupo-filtro">
       <label>Día de la semana</label>
       <select [(ngModel)]="diaSeleccionado" (change)="alCambiarDia()">
         <option *ngFor="let dia of diasSemana" [value]="dia">{{ dia }}</option>
       </select>
     </div>
 
-    <div class="filter-section" *ngIf="clasesDelDia.length > 0">
+    <div class="grupo-filtro" *ngIf="clasesDelDia.length > 0">
       <label>Seleccionar Curso</label>
-      <div class="course-list">
-        <button 
-          *ngFor="let clase of clasesDelDia" 
-          [class.active]="claseActual?.id === clase.id"
-          (click)="seleccionarClase(clase)">
-          {{ clase.curso }}
-        </button>
+      <div class="lista-cursos">
+        <div class="curso-card" 
+             *ngFor="let clase of clasesDelDia" 
+             [class.active]="claseActual?.id === clase.id"
+             (click)="seleccionarClase(clase)">
+          <strong>{{ clase.curso }}</strong>
+          <span>{{ clase.horario }}</span>
+        </div>
       </div>
     </div>
-    
-    <div class="no-classes" *ngIf="clasesDelDia.length === 0">
-      No hay clases programadas para este día.
+
+    <div class="resumen-seleccion" *ngIf="asientosSeleccionados.length > 0">
+      <h3>Tu Selección</h3>
+      <div class="tickets">
+        <span class="ticket-badge" *ngFor="let a of asientosSeleccionados">{{ a.id }}</span>
+      </div>
+      <button class="btn-confirmar" (click)="confirmarReserva()">Confirmar {{ asientosSeleccionados.length }} Asiento(s)</button>
     </div>
   </aside>
 
-  <main class="main-content" *ngIf="claseActual">
+  <main class="panel-mapa" *ngIf="claseActual">
     
-    <header class="class-info-card">
+    <div class="info-aula-header">
       <div class="info-item">
-        <span class="label">Profesor a cargo</span>
-        <span class="value">{{ claseActual.profesor }}</span>
+        <small>PROFESOR A CARGO</small>
+        <strong>{{ claseActual.profesor }}</strong>
       </div>
       <div class="info-item">
-        <span class="label">Aula Asignada</span>
-        <span class="value">{{ claseActual.aula }}</span>
+        <small>AULA ASIGNADA</small>
+        <strong>{{ claseActual.aula }}</strong>
       </div>
       <div class="info-item">
-        <span class="label">Accesibilidad</span>
-        <span class="value badge" [class.success]="claseActual.tieneAscensor" [class.warning]="!claseActual.tieneAscensor">
-          {{ claseActual.tieneAscensor ? '♿ Con Ascensor' : '⚠️ Solo Escaleras' }}
+        <small>ACCESIBILIDAD</small>
+        <span class="badge-ascensor" [class.no-ascensor]="!claseActual.tieneAscensor">
+          {{ claseActual.tieneAscensor ? '♿ Con Ascensor' : '⚠ Solo Escaleras' }}
         </span>
-      </div>
-    </header>
-
-    <div class="classroom-map">
-      <div class="whiteboard">Pizarra / Escritorio del Profesor</div>
-      
-      <div class="seat-grid">
-        <div 
-          *ngFor="let asiento of claseActual.asientos" 
-          class="desk" 
-          [ngClass]="[asiento.estado, asiento.tipo]"
-          (click)="toggleAsiento(asiento)"
-          [title]="'Carpeta ' + asiento.id + (asiento.tipo === 'preferencial' ? ' (Preferencial)' : '')">
-          {{ asiento.id }}
-        </div>
       </div>
     </div>
 
-    <footer class="action-footer">
-      <div class="legend">
-        <div class="legend-item"><span class="dot disponible"></span> Disponible</div>
-        <div class="legend-item"><span class="dot ocupado"></span> Ocupado</div>
-        <div class="legend-item"><span class="dot seleccionado"></span> Tu Selección</div>
-        <div class="legend-item"><span class="dot preferencial"></span> Fila Preferencial</div>
+    <div class="plano-asientos-container">
+      
+      <div class="leyenda">
+        <div class="item-leyenda"><div class="cuadro disponible"></div> Disponible</div>
+        <div class="item-leyenda"><div class="cuadro ocupado"></div> Ocupado</div>
+        <div class="item-leyenda"><div class="cuadro seleccionado"></div> Seleccionado</div>
+        <div class="item-leyenda"><div class="cuadro preferencial"></div> Preferencial</div>
       </div>
 
-      <div class="summary-actions" *ngIf="asientosSeleccionados.length > 0">
-        <div class="selected-desks">
-          Reservando: <span class="desk-badge" *ngFor="let a of asientosSeleccionados">{{ a.id }}</span>
+      <div class="pizarra">Pizarra / Escritorio del Profesor</div>
+
+      <div class="grid-asientos">
+        <div class="asiento" 
+             *ngFor="let asiento of claseActual.asientos"
+             [ngClass]="[asiento.estado, asiento.tipo]"
+             (click)="toggleAsiento(asiento)">
+          {{ asiento.id }}
         </div>
-        <button class="btn-primary" (click)="confirmarReserva()">Confirmar Asistencia</button>
       </div>
-    </footer>
 
+    </div>
   </main>
+
+  <div class="no-data" *ngIf="!claseActual">
+    <h3>No hay clases programadas para este día.</h3>
+  </div>
+
 </div>
