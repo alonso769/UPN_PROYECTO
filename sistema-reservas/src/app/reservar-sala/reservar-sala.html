@@ -1,0 +1,63 @@
+<div class="container mt-4">
+
+  <h2>Reservar Sala</h2>
+
+  <div class="card mt-3">
+    <div class="card-body">
+
+      <h5>Información de la sala</h5>
+
+      <p><strong>Sede:</strong> {{ sala.sede }}</p>
+      <p><strong>Piso:</strong> {{ sala.piso }}</p>
+      <p><strong>Código:</strong> {{ sala.codigo }}</p>
+      <p><strong>Capacidad:</strong> {{ sala.capacidad }}</p>
+      <p><strong>Tipo:</strong> {{ sala.tipo }}</p>
+
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-body">
+
+      <h5>Datos de reserva</h5>
+
+      <div class="mb-3">
+        <label class="form-label">Cantidad de personas</label>
+        <input type="number" class="form-control" [(ngModel)]="reserva.personas">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Fecha</label>
+        <input type="date" class="form-control" [(ngModel)]="reserva.fecha">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Hora de inicio</label>
+        <input type="time" class="form-control" [(ngModel)]="reserva.horaInicio">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Hora de fin</label>
+        <input type="time" class="form-control" [(ngModel)]="reserva.horaFin">
+      </div>
+
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" [(ngModel)]="reserva.accesibilidad">
+        <label class="form-check-label">
+          Requiere asistencia accesible
+        </label>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Observaciones</label>
+        <textarea class="form-control" rows="3" [(ngModel)]="reserva.observaciones"></textarea>
+      </div>
+
+      <button class="btn btn-primary" (click)="guardarReserva()">
+        Reservar
+      </button>
+
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,56 @@
+<div class="container mt-4">
+
+  <h2>Mis Reservas</h2>
+
+  <table class="table table-striped mt-3">
+
+    <thead class="table-dark">
+      <tr>
+        <th>Sala</th>
+        <th>Fecha</th>
+        <th>Hora inicio</th>
+        <th>Hora fin</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      @for (r of reservas; track r.id) {
+        <tr>
+          <td>{{ r.sala }}</td>
+          <td>{{ r.fecha }}</td>
+          <td>{{ r.horaInicio }}</td>
+          <td>{{ r.horaFin }}</td>
+          <td>{{ r.estado }}</td>
+
+          <td>
+
+            @if (r.estado === 'Activa') {
+              <button
+                class="btn btn-sm btn-danger me-2"
+                (click)="anularReserva(r.id)">
+                Anular
+              </button>
+
+              <button
+                class="btn btn-sm btn-warning"
+                (click)="postergarReserva()">
+                Postergar
+              </button>
+            }
+
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6" class="text-center">No hay reservas</td>
+        </tr>
+      }
+
+    </tbody>
+
+  </table>
+
+</div>
