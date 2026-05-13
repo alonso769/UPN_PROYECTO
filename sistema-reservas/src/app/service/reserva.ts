@@ -1,11 +1,26 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservaService {
 
-  salas = [
+  private apiUrlUsuarios = 'http://localhost:8080/api/usuarios';
+  private apiUrlReservasNuevas = 'http://localhost:8080/api/reservas';
+
+  constructor(private http: HttpClient) { }
+
+  registrarUsuario(usuario: any): Observable<any> {
+    return this.http.post(`${this.apiUrlUsuarios}/registrar`, usuario);
+  }
+
+  guardarReservaBD(reserva: any): Observable<any> {
+    return this.http.post(`${this.apiUrlReservasNuevas}/registrar`, reserva);
+  }
+
+  salas: any[] = [
     {
       id: 1,
       sede: 'UPN SJL',
@@ -24,7 +39,7 @@ export class ReservaService {
     }
   ];
 
-  reservas = [
+  reservas: any[] = [
     {
       id: 1,
       sala: 'A508',
