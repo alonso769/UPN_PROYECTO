@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ReservaService } from '../service/reserva';
 
 export interface Asiento {
   id: string;
@@ -38,16 +39,35 @@ export class ReservaAsientos implements OnInit {
   
   asientosSeleccionados: Asiento[] = [];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private reservaService: ReservaService) {}
 
   ngOnInit(): void {
     this.generarBaseDeDatosSimulada();
     this.alCambiarDia();
   }
 
-  // Base de datos simulada con cursos advanced para Ingeniería de Sistemas
+  // Base de datos simulada con cursos para toda la semana
   generarBaseDeDatosSimulada() {
     this.baseDatosClases = [
+      // LUNES
+      {
+        id: 'SIS704', dia: 'Lunes', curso: 'Redes y Conectividad', profesor: 'Ing. Torres',
+        aula: 'Laboratorio de Redes L-203', capacidad: 30, tieneAscensor: true, horario: '08:00 - 11:15',
+        asientos: this.generarMapaAsientos(3, 10)
+      },
+      // MARTES
+      {
+        id: 'SIS705', dia: 'Martes', curso: 'Base de Datos II', profesor: 'Ing. Gómez',
+        aula: 'Laboratorio B-105', capacidad: 35, tieneAscensor: true, horario: '15:00 - 18:15',
+        asientos: this.generarMapaAsientos(4, 8)
+      },
+      // MIÉRCOLES
+      {
+        id: 'SIS706', dia: 'Miércoles', curso: 'Programación Web II', profesor: 'Ing. Soto',
+        aula: 'Laboratorio de Cómputo B-301', capacidad: 40, tieneAscensor: true, horario: '18:00 - 21:15',
+        asientos: this.generarMapaAsientos(4, 10)
+      },
+      // JUEVES (Tus cursos originales conservados)
       {
         id: 'SIS701', dia: 'Jueves', curso: 'Inteligencia de Negocios (BI)', profesor: 'Ing. Fernández',
         aula: 'Laboratorio de Cómputo B-302', capacidad: 40, tieneAscensor: true, horario: '14:00 - 17:30',
@@ -58,10 +78,22 @@ export class ReservaAsientos implements OnInit {
         aula: 'Aula Teórica A-405', capacidad: 30, tieneAscensor: false, horario: '18:00 - 21:15',
         asientos: this.generarMapaAsientos(3, 10)
       },
+      // VIERNES
+      {
+        id: 'SIS707', dia: 'Viernes', curso: 'Seguridad Informática', profesor: 'Ing. Castillo',
+        aula: 'Laboratorio B-204', capacidad: 25, tieneAscensor: true, horario: '08:00 - 11:15',
+        asientos: this.generarMapaAsientos(3, 8)
+      },
+      // SÁBADO (Tus cursos originales conservados)
       {
         id: 'SIS703', dia: 'Sábado', curso: 'Gestión y Calidad de Datos', profesor: 'Dr. Silva',
         aula: 'Auditorio Principal', capacidad: 50, tieneAscensor: true, horario: '08:00 - 12:00',
         asientos: this.generarMapaAsientos(5, 10)
+      },
+      {
+        id: 'SIS708', dia: 'Sábado', curso: 'Taller de Tesis I', profesor: 'Ing. Vidal',
+        aula: 'Aula A-202', capacidad: 20, tieneAscensor: false, horario: '14:00 - 17:00',
+        asientos: this.generarMapaAsientos(2, 10)
       }
     ];
   }
@@ -112,10 +144,30 @@ export class ReservaAsientos implements OnInit {
     if (this.asientosSeleccionados.length === 0) return;
     
     const ids = this.asientosSeleccionados.map(a => a.id).join(', ');
-    alert(`✅ ¡Reserva Exitosa!\n\nCurso: ${this.claseActual.curso}\nAula: ${this.claseActual.aula}\nHorario: ${this.claseActual.horario}\nAsientos Separados: ${ids}`);
     
-    this.asientosSeleccionados.forEach(a => a.estado = 'ocupado');
-    this.asientosSeleccionados = [];
+    // 1. Recuperamos el código que guardamos en el Login
+    // Si no hay nada, por seguridad enviará "N00361032" (tu código) en lugar de ceros
+    const upnLogueado = localStorage.getItem('usuarioUpn') || 'N00361032';
+
+    const reservaParaBD = {
+      curso: this.claseActual.curso,
+      aula: this.claseActual.aula,
+      horario: this.claseActual.horario,
+      asientos: ids,
+      usuarioUpn: upnLogueado // Este nombre debe ser igual al de tu Reserva.java
+    };
+
+    this.reservaService.guardarReservaBD(reservaParaBD).subscribe({
+      next: (res) => {
+        alert(`✅ ¡Reserva Exitosa!\n\nEstudiante: ${upnLogueado}\nAsientos: ${ids}`);
+        this.asientosSeleccionados.forEach(a => a.estado = 'ocupado');
+        this.asientosSeleccionados = [];
+      },
+      error: (err) => {
+        alert('Hubo un error al registrar la reserva en MySQL.');
+        console.error(err);
+      }
+    });
   }
 
   volverAlMapa() { this.router.navigate(['/mapa']); }

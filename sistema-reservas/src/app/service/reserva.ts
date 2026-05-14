@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http'; // Se agregó HttpHeaders
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -10,15 +10,38 @@ export class ReservaService {
   private apiUrlUsuarios = 'http://localhost:8080/api/usuarios';
   private apiUrlReservasNuevas = 'http://localhost:8080/api/reservas';
 
+  // 1. CONFIGURACIÓN DE SEGURIDAD (Credenciales admin:upn2026)
+  private authHeader = 'Basic ' + btoa('admin:upn2026');
+
+  // 2. FUNCIÓN PARA GENERAR LAS CABECERAS DE AUTORIZACIÓN
+  private getOptions() {
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.authHeader
+      })
+    };
+  }
+
   constructor(private http: HttpClient) { }
 
+  // -------------------------------------------------------------------------
+  // MÉTODOS PARA EL BACKEND (MYSQL) - Con Seguridad Activada
+  // -------------------------------------------------------------------------
+
   registrarUsuario(usuario: any): Observable<any> {
-    return this.http.post(`${this.apiUrlUsuarios}/registrar`, usuario);
+    // Se agrega this.getOptions() como tercer parámetro
+    return this.http.post(`${this.apiUrlUsuarios}/registrar`, usuario, this.getOptions());
   }
 
   guardarReservaBD(reserva: any): Observable<any> {
-    return this.http.post(`${this.apiUrlReservasNuevas}/registrar`, reserva);
+    // Se agrega this.getOptions() como tercer parámetro
+    return this.http.post(`${this.apiUrlReservasNuevas}/registrar`, reserva, this.getOptions());
   }
+
+  // -------------------------------------------------------------------------
+  // DATA LOCAL (Mantenida intacta)
+  // -------------------------------------------------------------------------
 
   salas: any[] = [
     {
@@ -57,6 +80,10 @@ export class ReservaService {
       estado: 'Finalizada'
     }
   ];
+
+  // -------------------------------------------------------------------------
+  // MÉTODOS LOCALES (Mantenidos intactos)
+  // -------------------------------------------------------------------------
 
   getSala() {
     return this.salas[0];
